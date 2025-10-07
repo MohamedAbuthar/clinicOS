@@ -58,8 +58,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      extendBody: true,
       body: SafeArea(
         child: SingleChildScrollView(
+          padding: const EdgeInsets.only(bottom: 100),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -72,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: _buildBottomNav(context),
+      bottomNavigationBar: _buildFloatingBottomNav(context),
     );
   }
 
@@ -520,90 +522,81 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildBottomNav(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.teal,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
+  Widget _buildFloatingBottomNav(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: Container(
+        height: 70,
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(35),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 20,
+              offset: Offset(0, 10),
+            ),
+          ],
         ),
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(Icons.home, 'Home', false, () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const HomeScreen(),
-                  ),
-                );
-              }),
-              _buildNavItem(Icons.calendar_today, 'Appointment', false, () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AppointmentsScreen(),
-                  ),
-                );
-              }),
-              _buildNavItem(Icons.queue, 'Queue', false, () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const QueueBoardScreen(),
-                  ),
-                );
-              }),
-              _buildNavItem(Icons.medical_services, 'Doctor', false, () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const DoctorPresenceScreen(),
-                  ),
-                );
-              }),
-              _buildNavItem(Icons.event_repeat, 'Reschedule', false, () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const RescheduleAndCancelScreen(),
-                  ),
-                );
-              }),
-            ],
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildNavItem(Icons.home_outlined, true, () {
+              // Already on home screen
+            }),
+            _buildNavItem(Icons.calendar_today, false, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AppointmentsScreen(),
+                ),
+              );
+            }),
+            _buildNavItem(Icons.people_outline, false, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const QueueBoardScreen(),
+                ),
+              );
+            }),
+            _buildNavItem(Icons.favorite_border, false, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const DoctorPresenceScreen(),
+                ),
+              );
+            }),
+            _buildNavItem(Icons.person_outline, false, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RescheduleAndCancelScreen(),
+                ),
+              );
+            }),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildNavItem(
-    IconData icon,
-    String label,
-    bool isActive,
-    VoidCallback onTap,
-  ) {
-    return InkWell(
+  Widget _buildNavItem(IconData icon, bool isActive, VoidCallback onTap) {
+    return GestureDetector(
       onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: isActive ? Colors.white : Colors.white60, size: 26),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: isActive ? Colors.white : Colors.white60,
-              fontSize: 11,
-              fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
-            ),
-          ),
-        ],
+      child: Container(
+        width: 56,
+        height: 56,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: isActive ? Colors.white : Colors.transparent,
+        ),
+        child: Icon(
+          icon,
+          color: isActive ? Colors.black : Colors.white,
+          size: 28,
+        ),
       ),
     );
   }

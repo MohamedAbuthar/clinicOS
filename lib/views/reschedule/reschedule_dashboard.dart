@@ -4,7 +4,7 @@ import '../doctors/doctor_presence.dart';
 import '../home_screen/home_screen.dart';
 import '../queue/queue_dashboard.dart';
 import 'record_vitals_screen.dart';
-import 'upload_documents_screen.dart'; // Add this import
+import 'upload_documents_screen.dart';
 
 class RescheduleAndCancelScreen extends StatefulWidget {
   const RescheduleAndCancelScreen({Key? key}) : super(key: key);
@@ -55,7 +55,6 @@ class _RescheduleAndCancelScreenState extends State<RescheduleAndCancelScreen> {
     }
   }
 
-  // Navigate to Upload Documents Screen instead of directly picking files
   void _navigateToUploadDocuments() async {
     final result = await Navigator.push(
       context,
@@ -77,6 +76,7 @@ class _RescheduleAndCancelScreenState extends State<RescheduleAndCancelScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
+      extendBody: true,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -104,6 +104,7 @@ class _RescheduleAndCancelScreenState extends State<RescheduleAndCancelScreen> {
         ),
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 100),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -125,7 +126,7 @@ class _RescheduleAndCancelScreenState extends State<RescheduleAndCancelScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: _buildBottomNav(),
+      bottomNavigationBar: _buildFloatingBottomNav(),
     );
   }
 
@@ -450,7 +451,7 @@ class _RescheduleAndCancelScreenState extends State<RescheduleAndCancelScreen> {
                 ),
               ),
               ElevatedButton.icon(
-                onPressed: _navigateToUploadDocuments, // Changed this line
+                onPressed: _navigateToUploadDocuments,
                 icon: Icon(Icons.upload, size: 18),
                 label: Text('Upload'),
                 style: ElevatedButton.styleFrom(
@@ -558,90 +559,81 @@ class _RescheduleAndCancelScreenState extends State<RescheduleAndCancelScreen> {
     );
   }
 
-  Widget _buildBottomNav() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.teal,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
+  Widget _buildFloatingBottomNav() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: Container(
+        height: 70,
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(35),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 20,
+              offset: Offset(0, 10),
+            ),
+          ],
         ),
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(Icons.home, 'Home', false, () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const HomeScreen(),
-                  ),
-                );
-              }),
-              _buildNavItem(Icons.calendar_today, 'Appointment', false, () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AppointmentsScreen(),
-                  ),
-                );
-              }),
-              _buildNavItem(Icons.queue, 'Queue', false, () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const QueueBoardScreen(),
-                  ),
-                );
-              }),
-              _buildNavItem(Icons.medical_services, 'Doctor', false, () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const DoctorPresenceScreen(),
-                  ),
-                );
-              }),
-              _buildNavItem(Icons.event_repeat, 'Reschedule', false, () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const RescheduleAndCancelScreen(),
-                  ),
-                );
-              }),
-            ],
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildNavItem(Icons.home_outlined, false, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const HomeScreen(),
+                ),
+              );
+            }),
+            _buildNavItem(Icons.calendar_today, false, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AppointmentsScreen(),
+                ),
+              );
+            }),
+            _buildNavItem(Icons.people_outline, false, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const QueueBoardScreen(),
+                ),
+              );
+            }),
+            _buildNavItem(Icons.favorite_border, false, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const DoctorPresenceScreen(),
+                ),
+              );
+            }),
+            _buildNavItem(Icons.person_outline, true, () {
+              // Already on patient intake screen
+            }),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildNavItem(
-      IconData icon,
-      String label,
-      bool isActive,
-      VoidCallback onTap,
-      ) {
-    return InkWell(
+  Widget _buildNavItem(IconData icon, bool isActive, VoidCallback onTap) {
+    return GestureDetector(
       onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: isActive ? Colors.white : Colors.white60, size: 26),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: isActive ? Colors.white : Colors.white60,
-              fontSize: 11,
-              fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
-            ),
-          ),
-        ],
+      child: Container(
+        width: 56,
+        height: 56,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: isActive ? Colors.white : Colors.transparent,
+        ),
+        child: Icon(
+          icon,
+          color: isActive ? Colors.black : Colors.white,
+          size: 28,
+        ),
       ),
     );
   }
