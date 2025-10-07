@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'reschedule_confirmed.dart';
 
 class RescheduleScreen extends StatefulWidget {
   final Map<String, dynamic> appointment;
@@ -536,11 +537,15 @@ class _RescheduleScreenState extends State<RescheduleScreen> {
         Expanded(
           child: ElevatedButton(
             onPressed: () {
-              // Handle reschedule confirmation
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Appointment rescheduled successfully')),
+              // Navigate to reschedule confirmation page
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RescheduleConfirmedScreen(
+                    appointment: widget.appointment,
+                  ),
+                ),
               );
-              Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFF6750A4),
