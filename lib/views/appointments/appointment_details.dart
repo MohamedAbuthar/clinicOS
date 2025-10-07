@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'reschedule.dart';
+import 'cancellation.dart';
 
 class AppointmentDetailsScreen extends StatelessWidget {
   final Map<String, dynamic> appointment;
@@ -317,7 +318,14 @@ class AppointmentDetailsScreen extends StatelessWidget {
         const SizedBox(width: 16),
         Expanded(
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CancellationScreen(appointment: appointment),
+                ),
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
